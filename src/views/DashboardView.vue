@@ -103,55 +103,85 @@ function handleRefresh() {
       </div>
     </header>
 
-    <!-- ═══ KPI 指标行 ═══ -->
+    <!-- ═══ KPI 指标行（交错入场） ═══ -->
     <section class="kpi-row">
-      <MetricCard v-for="(kpi, i) in kpis" :key="i" v-bind="kpi" />
+      <TransitionGroup name="kpi">
+        <MetricCard v-for="(kpi, i) in kpis" :key="i" v-bind="kpi" :style="{ '--i': i }" />
+      </TransitionGroup>
     </section>
 
-    <!-- ═══ 主网格 ═══ -->
-    <section class="grid-main">
-      <!-- 中国地图（主区域） -->
-      <div class="panel-map dv-glass dv-glass-band dv-corners dv-glass-blue">
-        <div class="panel-h panel-h-map">全国城市访问分布</div>
-        <ChinaMap :data="cityRanking" :loading="loading" />
-      </div>
+    <!-- ═══ 主网格（页面入场动画） ═══ -->
+    <Transition appear name="page">
+      <section class="grid-main">
+        <!-- 中国地图（主区域） -->
+        <div class="panel-map dv-glass dv-glass-band dv-corners dv-glass-blue">
+          <div class="panel-h panel-h-map">全国城市访问分布</div>
+          <ChinaMap :data="cityRanking" :loading="loading" />
+          <Transition name="load-fade">
+            <div v-if="loading" class="panel-loading"><div class="load-spinner" /></div>
+          </Transition>
+        </div>
 
-      <!-- 右上方：访问趋势 -->
-      <div class="panel-top-right dv-glass dv-glass-band dv-corners dv-glass-teal">
-        <div class="panel-h">访问趋势</div>
-        <div class="panel-b"><AccessTrendChart :data="accessTrend" :loading="loading" /></div>
-      </div>
+        <!-- 右上方：访问趋势 -->
+        <div class="panel-top-right dv-glass dv-glass-band dv-corners dv-glass-teal">
+          <div class="panel-h">访问趋势</div>
+          <div class="panel-b">
+            <AccessTrendChart :data="accessTrend" :loading="loading" />
+            <Transition name="load-fade">
+              <div v-if="loading" class="panel-loading"><div class="load-spinner" /></div>
+            </Transition>
+          </div>
+        </div>
 
-      <!-- 右中：分类占比 -->
-      <div class="panel-mid-right dv-glass dv-glass-band dv-corners dv-glass-violet">
-        <div class="panel-h">分类占比</div>
-        <div class="panel-b"><CategoryShareChart :data="categoryShares" :loading="loading" /></div>
-      </div>
+        <!-- 右中：分类占比 -->
+        <div class="panel-mid-right dv-glass dv-glass-band dv-corners dv-glass-violet">
+          <div class="panel-h">分类占比</div>
+          <div class="panel-b">
+            <CategoryShareChart :data="categoryShares" :loading="loading" />
+            <Transition name="load-fade">
+              <div v-if="loading" class="panel-loading"><div class="load-spinner" /></div>
+            </Transition>
+          </div>
+        </div>
 
-      <!-- 底行左：实时动态 -->
-      <div class="panel-bot-left dv-glass dv-glass-band dv-corners dv-glass-orange">
-        <div class="panel-h">实时动态</div>
-        <div class="panel-b"><RealtimeLog :logs="realtimeLogs" /></div>
-      </div>
+        <!-- 底行左：实时动态 -->
+        <div class="panel-bot-left dv-glass dv-glass-band dv-corners dv-glass-orange">
+          <div class="panel-h">实时动态</div>
+          <div class="panel-b"><RealtimeLog :logs="realtimeLogs" /></div>
+        </div>
 
-      <!-- 底行中：城市排名 -->
-      <div class="panel-bot-mid dv-glass dv-glass-band dv-corners dv-glass-orange">
-        <div class="panel-h">城市排名</div>
-        <div class="panel-b"><CityRankingChart :data="cityRanking" :loading="loading" /></div>
-      </div>
+        <!-- 底行中：城市排名 -->
+        <div class="panel-bot-mid dv-glass dv-glass-band dv-corners dv-glass-orange">
+          <div class="panel-h">城市排名</div>
+          <div class="panel-b">
+            <CityRankingChart :data="cityRanking" :loading="loading" />
+            <Transition name="load-fade">
+              <div v-if="loading" class="panel-loading"><div class="load-spinner" /></div>
+            </Transition>
+          </div>
+        </div>
 
-      <!-- 底行右：教学中心（正方形） -->
-      <div class="panel-bot-right dv-glass dv-glass-band dv-corners dv-glass-violet">
-        <div class="panel-h">教学中心</div>
-        <CampusMap :data="centerOverview" :loading="loading" />
-      </div>
+        <!-- 底行右：教学中心 -->
+        <div class="panel-bot-right dv-glass dv-glass-band dv-corners dv-glass-violet">
+          <div class="panel-h">教学中心</div>
+          <CampusMap :data="centerOverview" :loading="loading" />
+          <Transition name="load-fade">
+            <div v-if="loading" class="panel-loading"><div class="load-spinner" /></div>
+          </Transition>
+        </div>
 
-      <!-- 底行最右：雷达模型（正方形） -->
-      <div class="panel-bot-far dv-glass dv-glass-band dv-corners dv-glass-blue">
-        <div class="panel-h">雷达模型</div>
-        <div class="panel-b"><RadarModelChart :data="radarModel" :loading="loading" /></div>
-      </div>
-    </section>
+        <!-- 底行最右：雷达模型 -->
+        <div class="panel-bot-far dv-glass dv-glass-band dv-corners dv-glass-blue">
+          <div class="panel-h">雷达模型</div>
+          <div class="panel-b">
+            <RadarModelChart :data="radarModel" :loading="loading" />
+            <Transition name="load-fade">
+              <div v-if="loading" class="panel-loading"><div class="load-spinner" /></div>
+            </Transition>
+          </div>
+        </div>
+      </section>
+    </Transition>
 
     <!-- ═══ FOOTER ═══ -->
     <footer class="footer">
@@ -462,5 +492,70 @@ function handleRefresh() {
 }
 .sep {
   opacity: 0.3;
+}
+
+/* ═══════════════════════════════════════════════
+   动效 / 过渡
+   ═══════════════════════════════════════════════ */
+
+/* 页面入场：网格整体淡入上移 */
+.page-enter-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+/* KPI 交错入场 */
+.kpi-enter-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition-delay: calc(var(--i, 0) * 0.08s);
+}
+.kpi-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* 加载遮罩层 */
+.panel-map,
+.panel-bot-right {
+  position: relative;
+}
+.panel-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(238, 243, 251, 0.45);
+  backdrop-filter: blur(1.5px);
+  border-radius: 8px;
+  z-index: 5;
+  pointer-events: none;
+}
+.load-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(37, 99, 235, 0.12);
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin-fast 0.7s linear infinite;
+}
+@keyframes spin-fast {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.load-fade-enter-active {
+  transition: opacity 0.3s ease;
+}
+.load-fade-leave-active {
+  transition: opacity 0.35s ease 0.1s;
+}
+.load-fade-enter-from,
+.load-fade-leave-to {
+  opacity: 0;
 }
 </style>
