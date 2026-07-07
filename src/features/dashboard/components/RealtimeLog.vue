@@ -1,8 +1,7 @@
 <script setup lang="ts">
 /**
- * RealtimeLog — 实时动态与告警
- * 展示教学数据中心的最新动态和轻量告警
- * alert 类型条目左侧有红/黄色警示条，自动循环翻滚
+ * RealtimeLog — 实时动态与告警（浅色主题）
+ * 20条日志自动循环翻滚
  */
 
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
@@ -75,7 +74,7 @@ const statusMap: Record<string, { label: string; color: string }> = {
 .log-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   overflow: hidden;
 }
 
@@ -83,17 +82,21 @@ const statusMap: Record<string, { label: string; color: string }> = {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: 4px;
   font-size: 10.5px;
-  background: rgb(255 255 255 / 2%);
+  color: var(--dv-text);
   font-variant-numeric: tabular-nums;
   border-left: 2px solid transparent;
   transition: background 0.3s;
 }
 
+.log-item:nth-child(odd) {
+  background: rgba(37, 99, 235, 0.02);
+}
+
 .log-item.is-alert {
-  background: rgb(248 113 113 / 4%);
+  background: rgba(248, 113, 113, 0.06);
   border-left-color: #f87171;
 }
 
@@ -125,22 +128,22 @@ const statusMap: Record<string, { label: string; color: string }> = {
 }
 
 .l-time {
-  color: rgb(255 255 255 / 30%);
+  color: var(--dv-text-muted);
   min-width: 52px;
   flex-shrink: 0;
 }
 .l-user {
-  color: rgb(255 255 255 / 55%);
+  color: var(--dv-text);
   min-width: 30px;
   flex-shrink: 0;
 }
 .l-action {
-  color: rgb(255 255 255 / 50%);
+  color: var(--dv-text-dim);
   min-width: 50px;
   flex-shrink: 0;
 }
 .l-detail {
-  color: rgb(255 255 255 / 40%);
+  color: var(--dv-text-dim);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;

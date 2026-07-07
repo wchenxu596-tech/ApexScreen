@@ -1,7 +1,6 @@
 <script setup lang="ts">
 /**
- * CategoryShareChart — 分类占比环形图
- * 展示各分类的占比分布
+ * CategoryShareChart — 分类占比环形图（浅色主题）
  */
 import { computed, ref, watch, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue'
 import * as echarts from 'echarts/core'
@@ -22,21 +21,21 @@ const props = defineProps<{
 const chartRef = ref<HTMLElement | null>(null)
 const chartInstance = shallowRef<echarts.ECharts | null>(null)
 
-const COLORS = ['#60a5fa', '#34d399', '#fbbf24', '#a78bfa', '#f87171', '#38bdf8']
+const COLORS = ['#2563eb', '#0ea5a4', '#f97316', '#6366f1', '#f87171', '#38bdf8']
 
 const option = computed(() => ({
   tooltip: {
     trigger: 'item',
-    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-    borderColor: 'rgba(255,255,255,0.1)',
-    textStyle: { color: '#e2e8f0', fontSize: 12 },
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderColor: 'rgba(37,99,235,0.1)',
+    textStyle: { color: '#1e293b', fontSize: 12 },
     formatter: '{b}: {c}% ({d}%)',
   },
   legend: {
     orient: 'vertical',
     right: 10,
     top: 'center',
-    textStyle: { color: 'rgba(255,255,255,0.6)', fontSize: 11 },
+    textStyle: { color: '#64748b', fontSize: 11 },
     itemWidth: 10,
     itemHeight: 10,
   },
@@ -47,11 +46,11 @@ const option = computed(() => ({
       center: ['45%', '50%'],
       avoidLabelOverlap: true,
       padAngle: 2,
-      itemStyle: { borderRadius: 4, borderColor: '#0f172a', borderWidth: 2 },
+      itemStyle: { borderRadius: 4, borderColor: '#eef3fb', borderWidth: 2 },
       label: { show: false },
       emphasis: {
-        label: { show: true, fontSize: 14, fontWeight: 'bold', color: '#e2e8f0' },
-        itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.3)' },
+        label: { show: true, fontSize: 14, fontWeight: 'bold', color: '#1e293b' },
+        itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.1)' },
       },
       data: props.data.map((d) => ({ name: d.name, value: d.value })),
     },
@@ -107,7 +106,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   flex: 1;
-  color: rgb(255, 255, 255, 30%);
+  color: var(--dv-text-muted);
   font-size: 13px;
 }
 </style>

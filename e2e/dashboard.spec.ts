@@ -1,8 +1,8 @@
 /**
- * E2E 测试 — 16:9 教学数据大屏
+ * E2E 测试 — 16:9 教学数据大屏（浅色毛玻璃主题）
  *
  * 覆盖：
- * - 首页可见性（标题、KPI、图表、中枢、日志）
+ * - 首页可见性（标题、KPI、中国地图、校园图、日志）
  * - 实时刷新（日期时间走动）
  * - 控制台无报错
  */
@@ -10,7 +10,7 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('教学数据大屏 E2E', () => {
-  test('首页完整渲染 — 标题/KPI/面板/中枢/日志均可见', async ({ page }) => {
+  test('首页完整渲染 — 标题/KPI/面板/地图/日志均可见', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
 
@@ -26,30 +26,33 @@ test.describe('教学数据大屏 E2E', () => {
     await expect(kpis).toHaveCount(4)
     await expect(kpis.first()).toBeVisible()
 
-    // ── 主网格（6 个面板） ──
-    const panels = page.locator('.panel')
-    await expect(panels).toHaveCount(6)
-
-    // ── 面板标题（4 个 — 中心态势无 panel-h） ──
+    // ── 面板标题（7 个） ──
     const headers = page.locator('.panel-h')
-    await expect(headers).toHaveCount(4)
-    await expect(headers.nth(0)).toContainText('访问趋势')
-    await expect(headers.nth(1)).toContainText('城市排名')
+    await expect(headers).toHaveCount(7)
+    await expect(headers.nth(0)).toContainText('全国城市访问分布')
+    await expect(headers.nth(1)).toContainText('访问趋势')
     await expect(headers.nth(2)).toContainText('分类占比')
-    await expect(headers.nth(3)).toContainText('雷达模型')
+    await expect(headers.nth(3)).toContainText('实时动态')
+    await expect(headers.nth(4)).toContainText('教学中心')
+    await expect(headers.nth(5)).toContainText('城市排名')
+    await expect(headers.nth(6)).toContainText('雷达模型')
 
-    // ── 中心态势总览 ──
-    const hub = page.locator('.hub-svg')
-    await expect(hub).toBeVisible()
+    // ── 2.5D 中国地图 ──
+    const chinaMap = page.locator('.map-container')
+    await expect(chinaMap).toBeVisible()
 
-    // ── 实时动态与告警（7 条） ──
-    const logs = page.locator('.log-item')
-    await expect(logs.first()).toBeVisible()
-    await expect(logs).toHaveCount(7)
+    // ── 校园中枢图 ──
+    const campusSvg = page.locator('.campus-svg')
+    await expect(campusSvg).toBeVisible()
 
-    // ── 告警条目应有醒目样式 ──
+    // ── 实时动态（20 条） ──
+    const logItems = page.locator('.log-item')
+    await expect(logItems.first()).toBeVisible()
+    await expect(logItems).toHaveCount(20)
+
+    // ── 告警条目（5 条 alert） ──
     const alerts = page.locator('.log-item.is-alert')
-    await expect(alerts).toHaveCount(2)
+    await expect(alerts).toHaveCount(5)
 
     // ── Footer ──
     await expect(page.locator('.footer')).toContainText('教学数据大屏')

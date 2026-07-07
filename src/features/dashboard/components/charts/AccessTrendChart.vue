@@ -1,18 +1,9 @@
 <script setup lang="ts">
 /**
- * AccessTrendChart — 访问趋势折线图
+ * AccessTrendChart — 访问趋势折线图（浅色主题）
  * 双轴：访问量 + 实时订单数 · 24h 滑动趋势窗口
  */
-import {
-  computed,
-  ref,
-  watch,
-  onMounted,
-  onBeforeUnmount,
-  shallowRef,
-  nextTick,
-  onActivated,
-} from 'vue'
+import { computed, ref, watch, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue'
 import * as echarts from 'echarts/core'
 import { LineChart, BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
@@ -34,13 +25,13 @@ const chartInstance = shallowRef<echarts.ECharts | null>(null)
 const option = computed(() => ({
   tooltip: {
     trigger: 'axis',
-    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-    borderColor: 'rgba(255,255,255,0.1)',
-    textStyle: { color: '#e2e8f0', fontSize: 12 },
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderColor: 'rgba(37,99,235,0.1)',
+    textStyle: { color: '#1e293b', fontSize: 12 },
   },
   legend: {
     data: ['访问量', '订单数'],
-    textStyle: { color: 'rgba(255,255,255,0.6)', fontSize: 11 },
+    textStyle: { color: '#64748b', fontSize: 11 },
     top: 0,
     right: 0,
     itemWidth: 16,
@@ -50,14 +41,14 @@ const option = computed(() => ({
   xAxis: {
     type: 'category',
     data: props.data.map((d) => d.time),
-    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.08)' } },
-    axisLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 10 },
+    axisLine: { lineStyle: { color: 'rgba(100,116,139,0.2)' } },
+    axisLabel: { color: '#94a3b8', fontSize: 10 },
     axisTick: { show: false },
   },
   yAxis: {
     type: 'value',
-    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)', type: 'dashed' } },
-    axisLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 10 },
+    splitLine: { lineStyle: { color: 'rgba(100,116,139,0.1)', type: 'dashed' } },
+    axisLabel: { color: '#94a3b8', fontSize: 10 },
   },
   series: [
     {
@@ -67,12 +58,12 @@ const option = computed(() => ({
       symbol: 'circle',
       symbolSize: 4,
       data: props.data.map((d) => d.visits),
-      lineStyle: { color: '#60a5fa', width: 2 },
-      itemStyle: { color: '#60a5fa' },
+      lineStyle: { color: '#2563eb', width: 2 },
+      itemStyle: { color: '#2563eb' },
       areaStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: 'rgba(96, 165, 250, 0.3)' },
-          { offset: 1, color: 'rgba(96, 165, 250, 0.02)' },
+          { offset: 0, color: 'rgba(37,99,235,0.2)' },
+          { offset: 1, color: 'rgba(37,99,235,0.01)' },
         ]),
       },
     },
@@ -83,12 +74,12 @@ const option = computed(() => ({
       symbol: 'diamond',
       symbolSize: 4,
       data: props.data.map((d) => d.orders),
-      lineStyle: { color: '#34d399', width: 2 },
-      itemStyle: { color: '#34d399' },
+      lineStyle: { color: '#0ea5a4', width: 2 },
+      itemStyle: { color: '#0ea5a4' },
       areaStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: 'rgba(52, 211, 153, 0.2)' },
-          { offset: 1, color: 'rgba(52, 211, 153, 0.01)' },
+          { offset: 0, color: 'rgba(14,165,164,0.15)' },
+          { offset: 1, color: 'rgba(14,165,164,0.01)' },
         ]),
       },
     },
@@ -113,9 +104,7 @@ watch(option, () => chartInstance.value?.setOption(option.value, { notMerge: tru
 watch(
   () => props.loading,
   (val) => {
-    if (!val) {
-      nextTick(() => resize())
-    }
+    if (!val) nextTick(() => resize())
   },
 )
 onMounted(async () => {
@@ -145,7 +134,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   flex: 1;
-  color: rgb(255, 255, 255, 30%);
+  color: var(--dv-text-muted);
   font-size: 13px;
 }
 </style>

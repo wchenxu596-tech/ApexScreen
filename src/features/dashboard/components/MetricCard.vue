@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * MetricCard — 16:9 大屏顶部 KPI 指标卡片
+ * MetricCard — 16:9 大屏顶部 KPI 指标卡片（浅色主题）
  */
 
 defineOptions({ name: 'MetricCard' })
@@ -20,13 +20,13 @@ withDefaults(
     unit: '',
     trend: 0,
     trendLabel: '',
-    color: '#60a5fa',
+    color: '#2563eb',
   },
 )
 </script>
 
 <template>
-  <div class="metric-card">
+  <div class="metric-card dv-glass">
     <div class="metric-label">{{ label }}</div>
     <div class="metric-value" :style="{ color }">
       <span v-if="prefix" class="m-prefix">{{ prefix }}</span>
@@ -43,17 +43,15 @@ withDefaults(
 
 <style scoped>
 .metric-card {
-  background: rgb(255, 255, 255, 2.5%);
-  border: 1px solid rgb(255, 255, 255, 6%);
-  border-radius: 6px;
-  padding: 7px 10px;
+  padding: 8px 10px 6px;
   text-align: center;
+  border-radius: 10px;
 }
 
 .metric-label {
   font-size: 10px;
-  color: rgb(255, 255, 255, 40%);
-  letter-spacing: 1px;
+  color: var(--dv-text-dim);
+  letter-spacing: 1.5px;
   margin-bottom: 2px;
 }
 
@@ -68,7 +66,7 @@ withDefaults(
 .m-unit {
   font-size: 12px;
   font-weight: 400;
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 .metric-trend {
@@ -81,7 +79,7 @@ withDefaults(
 }
 
 .metric-trend.up {
-  color: #34d399;
+  color: #0ea5a4;
 }
 .metric-trend.down {
   color: #f87171;
@@ -91,7 +89,7 @@ withDefaults(
   font-size: 8px;
 }
 .t-label {
-  color: rgb(255, 255, 255, 20%);
+  color: var(--dv-text-muted);
   font-size: 9px;
 }
 </style>

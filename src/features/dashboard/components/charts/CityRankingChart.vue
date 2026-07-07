@@ -1,4 +1,4 @@
-/** * CityRankingChart — 城市排名横向柱状图 * 按访问量排序展示城市排名 */
+/** * CityRankingChart — 城市排名横向柱状图（浅色主题） */
 <script setup lang="ts">
 import { computed, ref, watch, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue'
 import * as echarts from 'echarts/core'
@@ -22,9 +22,9 @@ const chartInstance = shallowRef<echarts.ECharts | null>(null)
 const option = computed(() => ({
   tooltip: {
     trigger: 'axis',
-    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-    borderColor: 'rgba(255,255,255,0.1)',
-    textStyle: { color: '#e2e8f0', fontSize: 12 },
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderColor: 'rgba(37,99,235,0.1)',
+    textStyle: { color: '#1e293b', fontSize: 12 },
     axisPointer: { type: 'shadow' },
     formatter: (params: { name: string; value: number }[]) => {
       const d = props.data.find((c) => c.city === params[0].name)
@@ -34,15 +34,15 @@ const option = computed(() => ({
   grid: { left: 70, right: 50, top: 8, bottom: 16 },
   xAxis: {
     type: 'value',
-    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)', type: 'dashed' } },
-    axisLabel: { color: 'rgba(255,255,255,0.35)', fontSize: 10 },
+    splitLine: { lineStyle: { color: 'rgba(100,116,139,0.1)', type: 'dashed' } },
+    axisLabel: { color: '#94a3b8', fontSize: 10 },
   },
   yAxis: {
     type: 'category',
     data: props.data.map((d) => d.city).reverse(),
     axisLine: { show: false },
     axisTick: { show: false },
-    axisLabel: { color: 'rgba(255,255,255,0.6)', fontSize: 11 },
+    axisLabel: { color: '#64748b', fontSize: 11 },
   },
   series: [
     {
@@ -52,8 +52,8 @@ const option = computed(() => ({
           value: d.value,
           itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-              { offset: 0, color: `rgba(96, 165, 250, ${0.4 + (i / props.data.length) * 0.5})` },
-              { offset: 1, color: '#60a5fa' },
+              { offset: 0, color: `rgba(249, 115, 22, ${0.3 + (i / props.data.length) * 0.6})` },
+              { offset: 1, color: '#f97316' },
             ]),
             borderRadius: [0, 3, 3, 0],
           },
@@ -63,7 +63,7 @@ const option = computed(() => ({
       label: {
         show: true,
         position: 'right',
-        color: 'rgba(255,255,255,0.5)',
+        color: '#64748b',
         fontSize: 10,
         formatter: (p: { value: number }) => p.value.toLocaleString(),
       },
@@ -119,7 +119,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   flex: 1;
-  color: rgb(255, 255, 255, 30%);
+  color: var(--dv-text-muted);
   font-size: 13px;
 }
 </style>

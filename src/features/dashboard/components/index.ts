@@ -1,5 +1,6 @@
 export { default as DashboardPanel } from './DashboardPanel.vue'
 export { default as MetricCard } from './MetricCard.vue'
 export { default as RealtimeLog } from './RealtimeLog.vue'
-export { default as CenterOverview } from './CenterOverview.vue'
+export { default as CampusMap } from './CampusMap2_5D.vue'
+export { default as ChinaMap } from './ChinaMap2_5D.vue'
 export { AccessTrendChart, CategoryShareChart, CityRankingChart, RadarModelChart } from './charts'

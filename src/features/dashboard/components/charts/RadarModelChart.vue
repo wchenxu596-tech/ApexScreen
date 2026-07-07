@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * RadarModelChart — 雷达模型图
+ * RadarModelChart — 雷达模型图（浅色主题）
  * 多维度能力评估，支持多系列对比
  */
 import { computed, ref, watch, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue'
@@ -22,20 +22,20 @@ const props = defineProps<{
 const chartRef = ref<HTMLElement | null>(null)
 const chartInstance = shallowRef<echarts.ECharts | null>(null)
 
-const LINE_COLORS = ['#60a5fa', '#fbbf24']
+const LINE_COLORS = ['#2563eb', '#f97316']
 
 const option = computed(() => {
   if (!props.data) return {}
 
   return {
     tooltip: {
-      backgroundColor: 'rgba(15, 23, 42, 0.9)',
-      borderColor: 'rgba(255,255,255,0.1)',
-      textStyle: { color: '#e2e8f0', fontSize: 12 },
+      backgroundColor: 'rgba(255,255,255,0.95)',
+      borderColor: 'rgba(37,99,235,0.1)',
+      textStyle: { color: '#1e293b', fontSize: 12 },
     },
     legend: {
       data: props.data.series.map((s) => s.name),
-      textStyle: { color: 'rgba(255,255,255,0.6)', fontSize: 11 },
+      textStyle: { color: '#64748b', fontSize: 11 },
       top: 0,
       right: 0,
       itemWidth: 16,
@@ -47,10 +47,10 @@ const option = computed(() => {
       center: ['50%', '55%'],
       splitNumber: 4,
       shape: 'polygon',
-      axisName: { color: 'rgba(255,255,255,0.6)', fontSize: 11 },
-      splitLine: { lineStyle: { color: 'rgba(255,255,255,0.08)' } },
-      splitArea: { areaStyle: { color: ['rgba(255,255,255,0.02)', 'rgba(255,255,255,0.04)'] } },
-      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.08)' } },
+      axisName: { color: '#64748b', fontSize: 11 },
+      splitLine: { lineStyle: { color: 'rgba(100,116,139,0.12)' } },
+      splitArea: { areaStyle: { color: ['rgba(37,99,235,0.02)', 'rgba(37,99,235,0.04)'] } },
+      axisLine: { lineStyle: { color: 'rgba(100,116,139,0.15)' } },
     },
     series: [
       {
@@ -59,7 +59,7 @@ const option = computed(() => {
           name: s.name,
           value: s.value,
           lineStyle: { color: LINE_COLORS[i], width: 2 },
-          areaStyle: { color: LINE_COLORS[i] + '25' },
+          areaStyle: { color: LINE_COLORS[i] + '20' },
           itemStyle: { color: LINE_COLORS[i] },
         })),
       },
@@ -123,7 +123,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   flex: 1;
-  color: rgb(255, 255, 255, 30%);
+  color: var(--dv-text-muted);
   font-size: 13px;
 }
 </style>
