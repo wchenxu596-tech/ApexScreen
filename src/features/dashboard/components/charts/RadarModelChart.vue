@@ -43,7 +43,7 @@ const option = computed(() => {
     },
     radar: {
       indicator: props.data.indicators.map((ind) => ({ name: ind.name, max: ind.max })),
-      radius: '60%',
+      radius: '70%',
       center: ['50%', '55%'],
       splitNumber: 4,
       shape: 'polygon',
@@ -82,6 +82,18 @@ function resize() {
 watch(option, () => chartInstance.value?.setOption(option.value, { notMerge: true }), {
   deep: true,
 })
+watch(
+  () => props.loading,
+  (val) => {
+    if (!val && props.data) nextTick(() => resize())
+  },
+)
+watch(
+  () => props.data,
+  (val) => {
+    if (val && !props.loading) nextTick(() => resize())
+  },
+)
 onMounted(async () => {
   await nextTick()
   init()
@@ -94,21 +106,23 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div v-if="!loading && data" ref="chartRef" class="chart-container" />
-  <div v-else class="chart-placeholder">{{ loading ? '加载中…' : '暂无数据' }}</div>
+  <div v-show="!loading && data" ref="chartRef" class="chart-container" />
+  <div v-show="loading || !data" class="chart-placeholder">
+    {{ loading ? '加载中…' : '暂无数据' }}
+  </div>
 </template>
 
 <style scoped>
 .chart-container {
   width: 100%;
-  height: 100%;
+  flex: 1;
   min-height: 0;
 }
 .chart-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  flex: 1;
   color: rgb(255, 255, 255, 30%);
   font-size: 13px;
 }

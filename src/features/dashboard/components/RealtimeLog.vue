@@ -2,16 +2,42 @@
 /**
  * RealtimeLog — 实时动态与告警
  * 展示教学数据中心的最新动态和轻量告警
- * alert 类型条目左侧有红/黄色警示条
+ * alert 类型条目左侧有红/黄色警示条，自动循环翻滚
  */
 
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import type { RealtimeLog as RealtimeLogType } from '../types'
 
 defineOptions({ name: 'RealtimeLog' })
 
-defineProps<{
+const props = defineProps<{
   logs: RealtimeLogType[]
 }>()
+
+const displayLogs = ref<RealtimeLogType[]>([])
+
+watch(
+  () => props.logs,
+  (logs) => {
+    displayLogs.value = [...logs]
+  },
+  { immediate: true },
+)
+
+let cycleTimer: ReturnType<typeof setInterval> | null = null
+
+onMounted(() => {
+  cycleTimer = setInterval(() => {
+    if (displayLogs.value.length > 1) {
+      const first = displayLogs.value.shift()!
+      displayLogs.value.push(first)
+    }
+  }, 3000)
+})
+
+onBeforeUnmount(() => {
+  if (cycleTimer) clearInterval(cycleTimer)
+})
 
 const statusMap: Record<string, { label: string; color: string }> = {
   success: { label: '正常', color: '#34d399' },
@@ -25,7 +51,7 @@ const statusMap: Record<string, { label: string; color: string }> = {
   <div class="log-list">
     <TransitionGroup name="row">
       <div
-        v-for="log in logs"
+        v-for="log in displayLogs"
         :key="log.id"
         class="log-item"
         :class="{ 'is-alert': log.type === 'alert' }"
@@ -50,6 +76,7 @@ const statusMap: Record<string, { label: string; color: string }> = {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  overflow: hidden;
 }
 
 .log-item {
@@ -62,6 +89,7 @@ const statusMap: Record<string, { label: string; color: string }> = {
   background: rgb(255 255 255 / 2%);
   font-variant-numeric: tabular-nums;
   border-left: 2px solid transparent;
+  transition: background 0.3s;
 }
 
 .log-item.is-alert {
@@ -125,11 +153,24 @@ const statusMap: Record<string, { label: string; color: string }> = {
   flex-shrink: 0;
 }
 
+/* TransitionGroup 动画 */
 .row-enter-active {
-  transition: all 0.35s ease;
+  transition: all 0.4s ease;
+}
+.row-leave-active {
+  transition: all 0.4s ease;
+  position: absolute;
+  right: 8px;
 }
 .row-enter-from {
   opacity: 0;
-  transform: translateX(-12px);
+  transform: translateX(-16px);
+}
+.row-leave-to {
+  opacity: 0;
+  transform: translateX(16px);
+}
+.row-move {
+  transition: transform 0.4s ease;
 }
 </style>

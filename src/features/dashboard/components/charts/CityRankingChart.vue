@@ -86,6 +86,12 @@ function resize() {
 watch(option, () => chartInstance.value?.setOption(option.value, { notMerge: true }), {
   deep: true,
 })
+watch(
+  () => props.loading,
+  (val) => {
+    if (!val) nextTick(() => resize())
+  },
+)
 onMounted(async () => {
   await nextTick()
   init()
@@ -98,21 +104,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div v-if="!loading" ref="chartRef" class="chart-container" />
-  <div v-else class="chart-placeholder">加载中…</div>
+  <div v-show="!loading" ref="chartRef" class="chart-container" />
+  <div v-show="loading" class="chart-placeholder">加载中…</div>
 </template>
 
 <style scoped>
 .chart-container {
   width: 100%;
-  height: 100%;
+  flex: 1;
   min-height: 0;
 }
 .chart-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  flex: 1;
   color: rgb(255, 255, 255, 30%);
   font-size: 13px;
 }
