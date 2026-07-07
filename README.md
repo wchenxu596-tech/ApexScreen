@@ -25,11 +25,9 @@
 
 ### 🖼️ 界面预览
 
-| 完整大屏 | 中国地图 |
-|:---:|:---:|
-| ![完整大屏](screenshots/dashboard-full.png) | ![中国地图](screenshots/dashboard-china-map.png) |
-| **右侧图表** | **底部面板** |
-| ![右侧图表](screenshots/dashboard-charts.png) | ![底部面板](screenshots/dashboard-bottom.png) |
+| 完整大屏 |
+|:---:|
+| ![完整大屏](docs/screenshots/dashboard-1920x1080.png) |
 
 ### ✨ 核心特性
 
@@ -64,17 +62,17 @@ open http://localhost:3000
 ### 📸 生成截图
 
 ```bash
-# 启动服务器
+# 确保开发服务器在运行
 npm run dev
 
-# 运行截图脚本
-node scripts/screenshot.mjs
+# 截图（默认 http://localhost:3000）
+npm run screenshot
 
 # 自定义地址
-URL=http://localhost:5173 node scripts/screenshot.mjs
+URL=http://localhost:5173 npm run screenshot
 ```
 
-截图输出在 `screenshots/` 目录。
+截图输出在 `docs/screenshots/dashboard-1920x1080.png`。
 
 ### 🧪 测试
 
@@ -121,7 +119,9 @@ ApexScreen/
 │       └── DashboardView.vue      # 主页面（16:9 网格布局）
 ├── e2e/                           # Playwright E2E 测试
 ├── scripts/
-│   └── screenshot.mjs             # 自动化截图脚本
+│   └── capture-dashboard.mjs      # 自动化截图脚本
+├── docs/
+│   └── screenshots/               # 截图输出目录
 ├── public/
 │   └── geo/china.json             # 中国地图 GeoJSON
 ├── .env / .env.development        # 环境变量
@@ -169,11 +169,9 @@ ApexScreen/
 
 ### 🖼️ Screenshots
 
-| Full Dashboard | China Map |
-|:---:|:---:|
-| ![Full Dashboard](screenshots/dashboard-full.png) | ![China Map](screenshots/dashboard-china-map.png) |
-| **Chart Panels** | **Bottom Panels** |
-| ![Charts](screenshots/dashboard-charts.png) | ![Bottom](screenshots/dashboard-bottom.png) |
+| Full Dashboard |
+|:---:|
+| ![Full Dashboard](docs/screenshots/dashboard-1920x1080.png) |
 
 ### ✨ Features
 
@@ -201,8 +199,8 @@ open http://localhost:3000
 ### 📸 Generate Screenshots
 
 ```bash
-npm run dev        # start server
-node scripts/screenshot.mjs
+npm run dev
+node scripts/capture-dashboard.mjs
 ```
 
 ### 🧪 Testing

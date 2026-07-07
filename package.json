@@ -17,7 +17,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "lint:style": "stylelint \"src/**/*.{css,vue}\" --fix",
-    "screenshot": "node scripts/screenshot.mjs",
+    "screenshot": "node scripts/capture-dashboard.mjs",
+    "screenshot:dashboard": "node scripts/capture-dashboard.mjs",
     "check": "npm run type-check && npm run lint && npm run lint:style && npm test",
     "prepare": "husky"
   },
