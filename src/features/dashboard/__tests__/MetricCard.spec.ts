@@ -29,7 +29,7 @@ describe('MetricCard', () => {
       },
     })
 
-    expect(wrapper.text()).toContain('↑')
+    expect(wrapper.text()).toContain('▲')
     expect(wrapper.text()).toContain('5.2%')
     expect(wrapper.text()).toContain('环比')
   })
@@ -43,7 +43,7 @@ describe('MetricCard', () => {
       },
     })
 
-    expect(wrapper.text()).toContain('↓')
+    expect(wrapper.text()).toContain('▼')
     expect(wrapper.text()).toContain('3.1%')
   })
 
@@ -59,13 +59,13 @@ describe('MetricCard', () => {
     expect(wrapper.text()).not.toContain('%')
   })
 
-  it('支持 prefix 和 suffix', () => {
+  it('支持 prefix 和 unit', () => {
     const wrapper = mount(MetricCard, {
       props: {
         label: '营收',
         value: 888.5,
         prefix: '¥',
-        suffix: '万',
+        unit: '万',
       },
     })
 

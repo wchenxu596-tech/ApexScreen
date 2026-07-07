@@ -48,8 +48,8 @@ const props = withDefaults(
 
 <style scoped>
 .dashboard-panel {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgb(255, 255, 255, 5%);
+  border: 1px solid rgb(255, 255, 255, 10%);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -61,13 +61,13 @@ const props = withDefaults(
   align-items: center;
   justify-content: space-between;
   padding: 12px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgb(255, 255, 255, 8%);
 }
 
 .panel-title {
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgb(255, 255, 255, 85%);
   letter-spacing: 1px;
 }
 
@@ -84,14 +84,14 @@ const props = withDefaults(
   justify-content: center;
   gap: 12px;
   height: 100%;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgb(255, 255, 255, 40%);
   font-size: 13px;
 }
 
 .loading-spinner {
   width: 28px;
   height: 28px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  border: 3px solid rgb(255, 255, 255, 10%);
   border-top-color: #60a5fa;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;

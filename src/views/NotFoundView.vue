@@ -17,13 +17,13 @@ defineOptions({ name: 'NotFoundView' })
   align-items: center;
   justify-content: center;
   height: 100vh;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgb(255, 255, 255, 60%);
   gap: 16px;
 }
 
 .not-found h1 {
   font-size: 72px;
-  color: rgba(255, 255, 255, 0.15);
+  color: rgb(255, 255, 255, 15%);
   margin: 0;
 }
 

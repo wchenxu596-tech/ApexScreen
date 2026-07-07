@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * RealtimeLog — 实时日志列表
- * 滚动显示最新操作记录
+ * 滚动展示最新操作记录
  */
 
 import type { RealtimeLog as RealtimeLogType } from '../types'
@@ -20,14 +20,14 @@ const statusMap: Record<string, { label: string; color: string }> = {
 </script>
 
 <template>
-  <div class="realtime-log">
-    <TransitionGroup name="log-list" tag="div" class="log-list">
+  <div class="log-list">
+    <TransitionGroup name="row">
       <div v-for="log in logs" :key="log.id" class="log-item">
-        <span class="log-time">{{ log.time }}</span>
-        <span class="log-user">{{ log.user }}</span>
-        <span class="log-action">{{ log.action }}</span>
-        <span class="log-amount">¥{{ log.amount.toLocaleString() }}</span>
-        <span class="log-status" :style="{ color: statusMap[log.status]?.color }">
+        <span class="l-time">{{ log.time }}</span>
+        <span class="l-user">{{ log.user }}</span>
+        <span class="l-action">{{ log.action }}</span>
+        <span class="l-detail">{{ log.detail }}</span>
+        <span class="l-status" :style="{ color: statusMap[log.status]?.color }">
           {{ statusMap[log.status]?.label }}
         </span>
       </div>
@@ -36,60 +36,57 @@ const statusMap: Record<string, { label: string; color: string }> = {
 </template>
 
 <style scoped>
-.realtime-log {
-  height: 100%;
-  overflow: hidden;
-}
-
 .log-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .log-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 6px 8px;
+  gap: 8px;
+  padding: 5px 8px;
   border-radius: 4px;
-  font-size: 12px;
-  background: rgba(255, 255, 255, 0.03);
+  font-size: 11px;
+  background: rgb(255, 255, 255, 2%);
   font-variant-numeric: tabular-nums;
 }
 
-.log-time {
-  color: rgba(255, 255, 255, 0.35);
-  min-width: 60px;
+.l-time {
+  color: rgb(255, 255, 255, 30%);
+  min-width: 56px;
+  flex-shrink: 0;
 }
-
-.log-user {
-  color: rgba(255, 255, 255, 0.7);
-  min-width: 50px;
+.l-user {
+  color: rgb(255, 255, 255, 60%);
+  min-width: 36px;
+  flex-shrink: 0;
 }
-
-.log-action {
-  color: rgba(255, 255, 255, 0.9);
+.l-action {
+  color: rgb(255, 255, 255, 50%);
+  min-width: 32px;
+  flex-shrink: 0;
 }
-
-.log-amount {
-  margin-left: auto;
-  color: rgba(255, 255, 255, 0.5);
+.l-detail {
+  color: rgb(255, 255, 255, 45%);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
-.log-status {
+.l-status {
   font-weight: 500;
-  min-width: 40px;
+  min-width: 34px;
   text-align: right;
+  flex-shrink: 0;
 }
 
-/* 列表动画 */
-.log-list-enter-active {
-  transition: all 0.4s ease;
+.row-enter-active {
+  transition: all 0.35s ease;
 }
-
-.log-list-enter-from {
+.row-enter-from {
   opacity: 0;
-  transform: translateX(-20px);
+  transform: translateX(-12px);
 }
 </style>

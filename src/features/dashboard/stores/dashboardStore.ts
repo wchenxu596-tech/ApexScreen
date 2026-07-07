@@ -3,10 +3,19 @@
  */
 
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { dashboardService } from '../services/dashboardService'
 import { logger } from '@/logging'
-import type { DashboardData } from '../types'
+import type {
+  DashboardData,
+  KPIMetric,
+  AccessTrendPoint,
+  CategoryShare,
+  CityRank,
+  RadarModelData,
+  CenterOverview,
+  RealtimeLog,
+} from '../types'
 
 export const useDashboardStore = defineStore('dashboard', () => {
   // ─── 状态 ───
@@ -15,8 +24,15 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const error = ref<string | null>(null)
   const lastUpdated = ref<string | null>(null)
 
-  // ─── 计算属性 ───
-  // （Composition API 风格的 getter，直接用 computed 或箭头函数）
+  // ─── 派生数据 ───
+  const kpis = computed<KPIMetric[]>(() => data.value?.kpis ?? [])
+  const accessTrend = computed<AccessTrendPoint[]>(() => data.value?.accessTrend ?? [])
+  const categoryShares = computed<CategoryShare[]>(() => data.value?.categoryShares ?? [])
+  const cityRanking = computed<CityRank[]>(() => data.value?.cityRanking ?? [])
+  const radarModel = computed<RadarModelData | null>(() => data.value?.radarModel ?? null)
+  const centerOverview = computed<CenterOverview | null>(() => data.value?.centerOverview ?? null)
+  const realtimeLogs = computed<RealtimeLog[]>(() => data.value?.realtimeLogs ?? [])
+  const hasData = computed(() => data.value !== null)
 
   // ─── 操作 ───
   async function fetchData() {
@@ -41,12 +57,18 @@ export const useDashboardStore = defineStore('dashboard', () => {
   }
 
   return {
-    // 状态
     data,
     loading,
     error,
     lastUpdated,
-    // 操作
+    kpis,
+    accessTrend,
+    categoryShares,
+    cityRanking,
+    radarModel,
+    centerOverview,
+    realtimeLogs,
+    hasData,
     fetchData,
     clearError,
   }

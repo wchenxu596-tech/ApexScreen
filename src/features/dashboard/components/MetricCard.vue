@@ -1,7 +1,6 @@
 <script setup lang="ts">
 /**
- * MetricCard — 指标概览卡片
- * 显示关键数值及变化趋势
+ * MetricCard — 16:9 大屏顶部 KPI 指标卡片
  */
 
 defineOptions({ name: 'MetricCard' })
@@ -11,14 +10,14 @@ withDefaults(
     label: string
     value: string | number
     prefix?: string
-    suffix?: string
+    unit?: string
     trend?: number
     trendLabel?: string
     color?: string
   }>(),
   {
     prefix: '',
-    suffix: '',
+    unit: '',
     trend: 0,
     trendLabel: '',
     color: '#60a5fa',
@@ -30,68 +29,69 @@ withDefaults(
   <div class="metric-card">
     <div class="metric-label">{{ label }}</div>
     <div class="metric-value" :style="{ color }">
-      <span v-if="prefix" class="metric-prefix">{{ prefix }}</span>
+      <span v-if="prefix" class="m-prefix">{{ prefix }}</span>
       {{ typeof value === 'number' ? value.toLocaleString() : value }}
-      <span v-if="suffix" class="metric-suffix">{{ suffix }}</span>
+      <span v-if="unit" class="m-unit">{{ unit }}</span>
     </div>
     <div v-if="trend !== 0" class="metric-trend" :class="{ up: trend > 0, down: trend < 0 }">
-      <span class="trend-arrow">{{ trend > 0 ? '↑' : '↓' }}</span>
+      <span class="t-arrow">{{ trend > 0 ? '▲' : '▼' }}</span>
       <span>{{ Math.abs(trend) }}%</span>
-      <span v-if="trendLabel" class="trend-label">{{ trendLabel }}</span>
+      <span v-if="trendLabel" class="t-label">{{ trendLabel }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
 .metric-card {
+  background: rgb(255, 255, 255, 2.5%);
+  border: 1px solid rgb(255, 255, 255, 6%);
+  border-radius: 6px;
+  padding: 7px 10px;
   text-align: center;
-  padding: 8px 0;
 }
 
 .metric-label {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 6px;
+  font-size: 10px;
+  color: rgb(255, 255, 255, 40%);
   letter-spacing: 1px;
+  margin-bottom: 2px;
 }
 
 .metric-value {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 700;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
 
-.metric-prefix,
-.metric-suffix {
-  font-size: 16px;
+.m-prefix,
+.m-unit {
+  font-size: 12px;
   font-weight: 400;
-  opacity: 0.7;
+  opacity: 0.55;
 }
 
 .metric-trend {
-  font-size: 13px;
-  margin-top: 4px;
+  font-size: 10px;
+  margin-top: 1px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .metric-trend.up {
   color: #34d399;
 }
-
 .metric-trend.down {
   color: #f87171;
 }
 
-.trend-arrow {
-  font-size: 14px;
+.t-arrow {
+  font-size: 8px;
 }
-
-.trend-label {
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 12px;
+.t-label {
+  color: rgb(255, 255, 255, 20%);
+  font-size: 9px;
 }
 </style>

@@ -1,8 +1,5 @@
-/**
- * Dashboard 特性 — 组件统一导出
- */
-
 export { default as DashboardPanel } from './DashboardPanel.vue'
 export { default as MetricCard } from './MetricCard.vue'
 export { default as RealtimeLog } from './RealtimeLog.vue'
-export { default as OverviewBar } from './OverviewBar.vue'
+export { default as CenterOverview } from './CenterOverview.vue'
+export { AccessTrendChart, CategoryShareChart, CityRankingChart, RadarModelChart } from './charts'

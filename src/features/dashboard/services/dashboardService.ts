@@ -16,10 +16,8 @@ export class DashboardService {
     try {
       const data = await this.adapter.getDashboardData()
       const duration = Math.round(performance.now() - startTime)
-
       logger.info('DashboardService', '大屏数据加载完成', { duration })
-
-      return data
+      return data as DashboardData
     } catch (error) {
       logger.error('DashboardService', '大屏数据加载失败', { error })
       throw error
@@ -31,5 +29,4 @@ export class DashboardService {
   }
 }
 
-/** 单例导出，避免重复创建 */
 export const dashboardService = new DashboardService()

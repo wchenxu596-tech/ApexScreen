@@ -1,159 +1,348 @@
 <script setup lang="ts">
 /**
- * DashboardView — 数据大屏主视图
- * 组合各特性模块组件，构成完整大屏
+ * DashboardView — 16:9 教学演示数据大屏
+ *
+ * 布局（1920 × 1080）：
+ * ┌────────────────────────────────────────────────────────────┐
+ * │ HEADER: 标题 · 时间 · 刷新                                  │
+ * ├──────┬──────┬──────┬──────┬──────┬──────┬─────────────────┤
+ * │ KPI 指标行（6 个）                                         │
+ * ├──────────────────┬────────────────┬──────────────────────┤
+ * │  访问趋势 (折线)   │ 中心态势 (指标环) │  城市排名 (横向柱状)   │
+ * ├──────────────────┼────────────────┼──────────────────────┤
+ * │  分类占比 (环形图)  │ 雷达模型 (雷达图) │  实时动态 (日志列表)   │
+ * └──────────────────┴────────────────┴──────────────────────┘
  */
 import { useDashboardData } from '@/features/dashboard/composables/useDashboardData'
-import { DashboardPanel, OverviewBar, RealtimeLog } from '@/features/dashboard/components'
-import { DataChart } from '@/shared/ui/DataChart'
-import '@/features/dashboard/components'
+import { useClock } from '@/features/dashboard/composables/useClock'
+import MetricCard from '@/features/dashboard/components/MetricCard.vue'
+import RealtimeLog from '@/features/dashboard/components/RealtimeLog.vue'
+import CenterOverview from '@/features/dashboard/components/CenterOverview.vue'
+import {
+  AccessTrendChart,
+  CategoryShareChart,
+  CityRankingChart,
+  RadarModelChart,
+} from '@/features/dashboard/components/charts'
+import { logger } from '@/logging'
 
-const { loading, overview, trends, categories, regions, realtimeLogs, refresh, lastUpdated } =
-  useDashboardData()
+const {
+  loading,
+  kpis,
+  accessTrend,
+  categoryShares,
+  cityRanking,
+  radarModel,
+  centerOverview,
+  realtimeLogs,
+  refresh,
+} = useDashboardData()
+const { dateStr, timeStr, weekday } = useClock()
+
+function handleRefresh() {
+  logger.info('DashboardView', '手动刷新')
+  refresh()
+}
 </script>
 
 <template>
-  <div class="dashboard-view">
-    <!-- 顶部标题栏 -->
-    <header class="dashboard-header">
-      <h1 class="dashboard-title">巅峰数据大屏</h1>
-      <div class="dashboard-toolbar">
-        <span class="update-time"
-          >最后更新: {{ lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : '--' }}</span
+  <div class="dashboard">
+    <!-- ═══ HEADER ═══ -->
+    <header class="header">
+      <div class="header-left">
+        <svg
+          class="header-icon"
+          viewBox="0 0 24 24"
+          width="22"
+          height="22"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
         >
-        <button class="btn-refresh" :disabled="loading" @click="refresh">
-          {{ loading ? '刷新中...' : '⟳ 刷新' }}
+          <path
+            d="M3 20h18M6 20V8l4-2v14M10 20V4l4-2v18M14 20V6l4-2v16M18 20V2l2-1v19"
+            stroke="#60a5fa"
+          />
+        </svg>
+        <h1 class="header-title">巅峰数据大屏</h1>
+        <span class="header-sub">Peak Data Dashboard</span>
+      </div>
+      <div class="header-right">
+        <div class="header-datetime">
+          <span class="dt-date">{{ dateStr() }}</span>
+          <span class="dt-week">{{ weekday() }}</span>
+          <span class="dt-time">{{ timeStr() }}</span>
+        </div>
+        <button class="btn-refresh" :disabled="loading" @click="handleRefresh">
+          <svg
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            :class="{ spin: loading }"
+          >
+            <path d="M21 12a9 9 0 11-3-6.7" stroke-linecap="round" />
+          </svg>
+          {{ loading ? '刷新中' : '刷新' }}
         </button>
       </div>
     </header>
 
-    <!-- 概览指标 -->
-    <section class="dashboard-section">
-      <OverviewBar :metrics="overview" :loading="loading" />
+    <!-- ═══ KPI 指标行 ═══ -->
+    <section class="kpi-row">
+      <MetricCard v-for="(kpi, i) in kpis" :key="i" v-bind="kpi" />
     </section>
 
-    <!-- 图表网格 -->
-    <section class="dashboard-grid">
-      <!-- 用户趋势 -->
-      <DashboardPanel title="用户趋势" :loading="loading" :span="6" :height="320">
-        <DataChart
-          v-if="trends"
-          type="line"
-          :data="trends.users"
-          x-key="time"
-          y-key="value"
-          color="#60a5fa"
-        />
-      </DashboardPanel>
+    <!-- ═══ 主图表网格 (3列 × 2行) ═══ -->
+    <section class="grid-main">
+      <!-- 行 1 -->
+      <div class="panel col-span-5">
+        <div class="panel-h"><span class="dot" /> 访问趋势</div>
+        <div class="panel-b"><AccessTrendChart :data="accessTrend" :loading="loading" /></div>
+      </div>
+      <div class="panel col-span-2 panel-center">
+        <CenterOverview :data="centerOverview" :loading="loading" />
+      </div>
+      <div class="panel col-span-5">
+        <div class="panel-h"><span class="dot" /> 城市排名</div>
+        <div class="panel-b"><CityRankingChart :data="cityRanking" :loading="loading" /></div>
+      </div>
 
-      <!-- 营收趋势 -->
-      <DashboardPanel title="营收趋势" :loading="loading" :span="6" :height="320">
-        <DataChart
-          v-if="trends"
-          type="bar"
-          :data="trends.revenue"
-          x-key="time"
-          y-key="value"
-          color="#34d399"
-        />
-      </DashboardPanel>
-
-      <!-- 分类分布 -->
-      <DashboardPanel title="分类分布" :loading="loading" :span="4" :height="300">
-        <DataChart
-          v-if="categories.length"
-          type="pie"
-          :data="categories"
-          name-key="name"
-          value-key="value"
-        />
-      </DashboardPanel>
-
-      <!-- 区域分布 -->
-      <DashboardPanel title="区域分布" :loading="loading" :span="4" :height="300">
-        <DataChart
-          v-if="regions.length"
-          type="bar"
-          :data="regions"
-          x-key="name"
-          y-key="value"
-          color="#fbbf24"
-        />
-      </DashboardPanel>
-
-      <!-- 实时日志 -->
-      <DashboardPanel title="实时动态" :loading="loading" :span="4" :height="300">
-        <RealtimeLog :logs="realtimeLogs" />
-      </DashboardPanel>
+      <!-- 行 2 -->
+      <div class="panel col-span-5">
+        <div class="panel-h"><span class="dot" /> 分类占比</div>
+        <div class="panel-b"><CategoryShareChart :data="categoryShares" :loading="loading" /></div>
+      </div>
+      <div class="panel col-span-2">
+        <div class="panel-h"><span class="dot" /> 雷达模型</div>
+        <div class="panel-b"><RadarModelChart :data="radarModel" :loading="loading" /></div>
+      </div>
+      <div class="panel col-span-5">
+        <div class="panel-h"><span class="dot" /> 实时动态</div>
+        <div class="panel-b"><RealtimeLog :logs="realtimeLogs" /></div>
+      </div>
     </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer">
+      <span>巅峰数据大屏 · 教学演示系统</span>
+      <span class="sep">|</span>
+      <span>数据模拟展示，仅供课堂使用</span>
+      <span class="sep">|</span>
+      <span>动态刷新 {{ loading ? '…' : '✓' }}</span>
+    </footer>
   </div>
 </template>
 
 <style scoped>
-.dashboard-view {
-  padding: 24px 32px;
+/* ════════════════════════════════════════════
+   16:9 暗色大屏 · 固定视口 · 无滚动
+   ════════════════════════════════════════════ */
+
+.dashboard {
+  width: 100vw;
   height: 100vh;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  background: #0b1120;
+  color: rgb(255, 255, 255, 85%);
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
 }
 
-.dashboard-header {
+/* ── HEADER ── */
+
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 8px 28px;
+  border-bottom: 1px solid rgb(255, 255, 255, 6%);
   flex-shrink: 0;
 }
 
-.dashboard-title {
-  font-size: 28px;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon {
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.header-title {
+  font-size: 20px;
   font-weight: 700;
+  letter-spacing: 3px;
   color: #fff;
-  letter-spacing: 4px;
   margin: 0;
 }
 
-.dashboard-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+.header-sub {
+  font-size: 10px;
+  color: rgb(255, 255, 255, 20%);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
-.update-time {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.header-datetime {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dt-date {
+  font-size: 13px;
+  color: rgb(255, 255, 255, 50%);
+}
+.dt-week {
+  font-size: 11px;
+  color: rgb(255, 255, 255, 30%);
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgb(255, 255, 255, 4%);
+}
+.dt-time {
+  font-size: 20px;
+  font-weight: 600;
+  color: #60a5fa;
+  letter-spacing: 2px;
 }
 
 .btn-refresh {
-  padding: 6px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border: 1px solid rgb(255, 255, 255, 12%);
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
+  background: rgb(255, 255, 255, 4%);
+  color: rgb(255, 255, 255, 55%);
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
-
 .btn-refresh:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgb(255, 255, 255, 8%);
+  border-color: rgb(255, 255, 255, 20%);
+  color: #fff;
 }
-
 .btn-refresh:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
+.spin {
+  animation: spin 1s linear infinite;
+}
 
-.dashboard-section {
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── KPI ROW ── */
+
+.kpi-row {
+  display: flex;
+  gap: 8px;
+  padding: 8px 28px;
+  flex-shrink: 0;
+}
+.kpi-row > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── MAIN GRID ── */
+
+.grid-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  padding: 0 28px 6px;
+  min-height: 0;
+}
+
+.col-span-5 {
+  grid-column: span 5;
+}
+.col-span-2 {
+  grid-column: span 2;
+}
+
+.panel {
+  background: rgb(255, 255, 255, 2.5%);
+  border: 1px solid rgb(255, 255, 255, 6%);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.panel-h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgb(255, 255, 255, 60%);
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgb(255, 255, 255, 4%);
   flex-shrink: 0;
 }
 
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 16px;
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #60a5fa;
+  flex-shrink: 0;
+}
+
+.panel-b {
   flex: 1;
+  padding: 4px 8px 6px;
+  min-height: 0;
+}
+
+.panel-center {
+  border-color: rgb(96, 165, 250, 15%);
+  background: rgb(96, 165, 250, 3%);
+}
+.panel-center .panel-b {
+  padding: 0;
+}
+
+/* ── FOOTER ── */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 10px;
+  color: rgb(255, 255, 255, 18%);
+  flex-shrink: 0;
+  border-top: 1px solid rgb(255, 255, 255, 3%);
+}
+.sep {
+  opacity: 0.3;
 }
 </style>
