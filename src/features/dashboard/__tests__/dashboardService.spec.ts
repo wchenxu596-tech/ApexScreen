@@ -40,7 +40,8 @@ describe('DashboardService', () => {
 
     // 中心态势
     expect(data.centerOverview).toBeDefined()
-    expect(data.centerOverview.metrics.length).toBeGreaterThan(0)
+    expect(data.centerOverview.hubName).toBe('巅峰中枢')
+    expect(data.centerOverview.nodes.length).toBeGreaterThan(0)
 
     // 实时日志
     expect(data.realtimeLogs.length).toBeGreaterThan(0)

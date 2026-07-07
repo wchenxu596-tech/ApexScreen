@@ -1,8 +1,7 @@
 <script setup lang="ts">
 /**
  * AccessTrendChart — 访问趋势折线图
- * 双 Y 轴：访问量 + 独立访客
- * 用于大屏顶部，展示 24 小时内访问趋势
+ * 双轴：访问量 + 实时订单数 · 24h 滑动趋势窗口
  */
 import { computed, ref, watch, onMounted, onBeforeUnmount, shallowRef } from 'vue'
 import * as echarts from 'echarts/core'
@@ -31,7 +30,7 @@ const option = computed(() => ({
     textStyle: { color: '#e2e8f0', fontSize: 12 },
   },
   legend: {
-    data: ['访问量', '独立访客'],
+    data: ['访问量', '订单数'],
     textStyle: { color: 'rgba(255,255,255,0.6)', fontSize: 11 },
     top: 0,
     right: 0,
@@ -69,12 +68,12 @@ const option = computed(() => ({
       },
     },
     {
-      name: '独立访客',
+      name: '订单数',
       type: 'line',
       smooth: true,
       symbol: 'diamond',
       symbolSize: 4,
-      data: props.data.map((d) => d.uniqueVisitors),
+      data: props.data.map((d) => d.orders),
       lineStyle: { color: '#34d399', width: 2 },
       itemStyle: { color: '#34d399' },
       areaStyle: {

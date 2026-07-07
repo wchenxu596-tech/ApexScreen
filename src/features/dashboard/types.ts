@@ -1,6 +1,6 @@
 /**
  * Dashboard 特性 — 类型定义
- * 16:9 教学大屏完整数据模型
+ * 教学数据中心 16:9 大屏数据模型
  */
 
 /** 顶部 KPI 指标 */
@@ -18,7 +18,7 @@ export interface KPIMetric {
 export interface AccessTrendPoint {
   time: string
   visits: number
-  uniqueVisitors: number
+  orders: number
 }
 
 /** 分类占比 */
@@ -49,30 +49,32 @@ export interface RadarModelData {
   }[]
 }
 
-/** 中心态势 — 核心指标 */
-export interface CenterMetric {
-  label: string
+/** 中枢节点 — 中心态势的周边业务 */
+export interface HubNode {
+  name: string
   value: number
   unit: string
-  status?: 'success' | 'warning' | 'danger'
-  progress?: number
+  status: 'success' | 'warning' | 'danger'
+  desc: string
 }
 
 /** 中心态势总览 */
 export interface CenterOverview {
-  title: string
-  metrics: CenterMetric[]
+  hubName: string
+  hubSubtitle: string
+  nodes: HubNode[]
   summary: string
 }
 
-/** 实时日志 */
+/** 实时动态 */
 export interface RealtimeLog {
   id: string
-  action: string
+  type: 'log' | 'alert'
   user: string
+  action: string
   detail: string
   time: string
-  status: 'success' | 'pending' | 'failed'
+  status: 'success' | 'pending' | 'warning' | 'failed'
 }
 
 /** 大屏主数据模型 */
@@ -85,11 +87,4 @@ export interface DashboardData {
   centerOverview: CenterOverview
   realtimeLogs: RealtimeLog[]
   updatedAt: string
-}
-
-/** 面板组件 Props */
-export interface PanelProps {
-  title: string
-  loading?: boolean
-  className?: string
 }
