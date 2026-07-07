@@ -3,7 +3,7 @@
  * RadarModelChart — 雷达模型图
  * 多维度能力评估，支持多系列对比
  */
-import { computed, ref, watch, onMounted, onBeforeUnmount, shallowRef } from 'vue'
+import { computed, ref, watch, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue'
 import * as echarts from 'echarts/core'
 import { RadarChart } from 'echarts/charts'
 import { TooltipComponent, LegendComponent, RadarComponent } from 'echarts/components'
@@ -82,7 +82,8 @@ function resize() {
 watch(option, () => chartInstance.value?.setOption(option.value, { notMerge: true }), {
   deep: true,
 })
-onMounted(() => {
+onMounted(async () => {
+  await nextTick()
   init()
   window.addEventListener('resize', resize)
 })
@@ -101,13 +102,13 @@ onBeforeUnmount(() => {
 .chart-container {
   width: 100%;
   height: 100%;
-  min-height: 240px;
+  min-height: 0;
 }
 .chart-placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 260px;
+  height: 100%;
   color: rgb(255, 255, 255, 30%);
   font-size: 13px;
 }

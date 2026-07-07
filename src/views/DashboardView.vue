@@ -321,8 +321,16 @@ function handleRefresh() {
 
 .panel-b {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 4px 8px 6px;
   min-height: 0;
+}
+
+.panel-b > :deep(*) {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
 }
 
 .panel-center {
