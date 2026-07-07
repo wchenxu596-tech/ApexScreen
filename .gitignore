@@ -8,8 +8,7 @@ dist/
 build/
 *.tsbuildinfo
 
-# Environment files
-.env
+# Environment (local overrides only)
 .env.local
 .env.*.local
 
@@ -31,3 +30,7 @@ coverage/
 # Temp
 tmp/
 temp/
+
+# Playwright
+playwright-report/
+test-results/
